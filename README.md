@@ -1,6 +1,6 @@
 # Overview
 
-Creates a docker image based on Ubuntu 14.04 and installs the [Nix Package Manager](https://nixos.org/nix/), which we then use to install the [Certificate Transparency](https://github.com/google/certificate-transparency)  package.
+Creates a [Docker image](https://hub.docker.com/r/openregister/certificate-transparency/) based on Ubuntu 14.04 and installs the [Nix Package Manager](https://nixos.org/nix/), which we then use to install the [Certificate Transparency](https://github.com/google/certificate-transparency)  package.
 
 Nix is multi-user aware and doesn't like running as root, so we create a 'nixuser' account which installs the CT package. If you use the default entrypoints, you'll need to change to this user and source the CT variables (see Running section below).
 
