@@ -21,28 +21,21 @@ Note that there's no automated build from GitHub at this point - need to investi
 ## Running
 
 ```
-$ docker run -it openregister/certificate-transparency /bin/bash
-root@2d77cb0acc73:/# su nixuser
-nixuser@2d77cb0acc73:/$ cd
-nixuser@2d77cb0acc73:~$ . /home/nixuser/.nix-profile/etc/profile.d/nix.sh
-nixuser@2d77cb0acc73:~$ ct
-ct <command> ...
-Known commands:
-connect - connect to an SSL server
-upload - upload a submission to a CT log server
-certificate - make a superfluous proof certificate
-extension_data - convert an audit proof to TLS extension format
-configure_proof - write the proof in an X509v3 configuration file
-diagnose_chain - print info about the SCTs the cert chain carries
-wrap - take an SCT and certificate chain and wrap them as if they were
-       retrieved via 'connect'
-wrap_embedded - take a certificate chain with an embedded SCT and wrap
-                them as if they were retrieved via 'connect'
-get_roots - get roots from the log
-get_entries - get entries from the log
-sth - get the current STH from the log
-consistency - get and check consistency of two STHs
-monitor - use the monitor (see monitor_action flag)
-Use --help to display command-line flag options
+$ docker run -d -p 8080:8080 openregister/certificate-transparency 
+```
+
+## Testing that it's working
+
+```
+$ curl http://192.168.99.100:8080/ct/v1/get-sth
+{ "tree_size": 0, "timestamp": 1450348896926, "sha256_root_hash": "47DEQpj8HBSa+\/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=", "tree_head_signature": "BAMARjBEAiBo9fSFIFTgKNCHtwy2XTH+14Zfl3woixHMZ3uGaiYAGQIgRl\/8W2VdQgpF65+zjV3m\/aotAOnLf4ZIPVHDJVrHG24=" }
+
+$ curl -X POST -H "Content-Type: application/json" http://192.168.99.100:8080/ct/v1/add-json -d '{}'
+{ "sct_version": 0, "id": "xw5QggCXxPXD\/MdRt8jvwFHfPDOlVZjby6IcDdfGxwY=", "timestamp": 1450348938302, "extensions": "", "signature": "BAMARzBFAiAjZUVNXylv2ocLCW5d6GdNS5lhpCLamj57giw34Kx+1wIhAJ6df+DNvNItOhhdpa8y0b6YNgTC+IusejJ3xSv\/AoZr" }
+
+$ sleep 10s
+
+$ curl http://192.168.99.100:8080/ct/v1/get-sth
+{ "tree_size": 1, "timestamp": 1450348966928, "sha256_root_hash": "RGmTWn7r56bGhLC+f0B\/0gUErdbWO6fuhBftJplPsJU=", "tree_head_signature": "BAMARzBFAiEA1bMv0QwgVbRK9eFkhmaKsNWXeYRVJKA1tSWVmBycMcECID1nKYKmFqOJ1G5VfTg2GZcAPaxevVZiDKbICzFrM0YG" }
 ```
 
