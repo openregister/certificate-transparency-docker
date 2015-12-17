@@ -33,5 +33,7 @@ RUN echo "nixuser:$(openssl rand -base64 32)" | chpasswd
 
 RUN openssl ecparam -out ct.key -name secp256r1 -genkey
 RUN openssl ec -in ct.key -pubout -out ct.pem
+
 EXPOSE 8080
-ENTRYPOINT . /home/nixuser/.nix-profile/etc/profile.d/nix.sh && xjson-server --port=8080  --guard_window_seconds=5 --tree_signing_frequency_seconds=10  --leveldb_db=/data --key=ct.key --i_know_stand_alone_mode_can_lose_data
+
+CMD . /home/nixuser/.nix-profile/etc/profile.d/nix.sh && xjson-server --port=8080  --guard_window_seconds=5 --tree_signing_frequency_seconds=10  --leveldb_db=/data --key=ct.key --i_know_stand_alone_mode_can_lose_data
