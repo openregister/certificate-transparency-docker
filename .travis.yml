@@ -3,7 +3,7 @@ sudo: required
 services:
   - docker
 
-language: go
+language: java
 
 script:
   - export REPO=openregister/certificate-transparency
