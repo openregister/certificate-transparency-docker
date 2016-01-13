@@ -18,7 +18,9 @@ If you're a member of the openregister organisation on Docker Hub, then you can 
 docker push openregister/certificate-transparency
 ```
 
-Note that there's no automated build from GitHub at this point - need to investigate the permissions.
+### Automated Builds
+
+We're not using an automated Docker Hub build as it won't let us select an organisation's repository to build from. We are using Travis but we've not set Travis up to automatically tag and push the images to the Docker Registry at this time.
 
 ## Running
 
