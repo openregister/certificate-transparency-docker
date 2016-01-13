@@ -25,7 +25,15 @@ RUN . /home/nixuser/.nix-profile/etc/profile.d/nix.sh && nix-channel --update
 RUN . /home/nixuser/.nix-profile/etc/profile.d/nix.sh && nix-env -iA nixos.certificate-transparency
 
 # Tidyup - remove password-free sudo capability
+RUN rm /home/nixuser/webinstall.sh
 USER root
 WORKDIR /
 RUN rm /etc/sudoers.d/nixuser
 RUN echo "nixuser:$(openssl rand -base64 32)" | chpasswd
+
+RUN openssl ecparam -out ct.key -name secp256r1 -genkey
+RUN openssl ec -in ct.key -pubout -out ct.pem
+
+EXPOSE 8080
+
+CMD . /home/nixuser/.nix-profile/etc/profile.d/nix.sh && xjson-server --port=8080  --guard_window_seconds=5 --tree_signing_frequency_seconds=10  --leveldb_db=/data --key=ct.key --i_know_stand_alone_mode_can_lose_data
