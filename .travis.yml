@@ -5,6 +5,10 @@ services:
 
 language: java
 
+env:
+  global:
+    COMMIT=${TRAVIS_COMMIT::8}
+
 script:
   - export REPO=openregister/certificate-transparency
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
