@@ -2,9 +2,7 @@ FROM ubuntu:14.04
 MAINTAINER Andrew Gorton
 
 # Update the system
-RUN apt-get update -y
-RUN apt-get upgrade -y
-RUN apt-get install -y curl
+RUN apt-get update -y && apt-get upgrade -y && apt-get install -y curl
 
 # Add the nixuser for Nix Package Management
 RUN groupadd -g 10000 nixuser
@@ -20,8 +18,7 @@ RUN chmod u+x /home/nixuser/webinstall.sh
 RUN ["/bin/sh", "-l", "-c", "USER=nixuser /home/nixuser/webinstall.sh"]
 
 # Install CT
-RUN . /home/nixuser/.nix-profile/etc/profile.d/nix.sh && nix-channel --add https://nixos.org/channels/nixos-unstable nixos
-RUN . /home/nixuser/.nix-profile/etc/profile.d/nix.sh && nix-channel --update
+RUN . /home/nixuser/.nix-profile/etc/profile.d/nix.sh && nix-channel --add https://nixos.org/channels/nixos-unstable nixos && nix-channel --update
 RUN . /home/nixuser/.nix-profile/etc/profile.d/nix.sh && nix-env -iA nixos.certificate-transparency
 
 # Tidyup - remove password-free sudo capability
@@ -31,8 +28,7 @@ WORKDIR /
 RUN rm /etc/sudoers.d/nixuser
 RUN echo "nixuser:$(openssl rand -base64 32)" | chpasswd
 
-RUN openssl ecparam -out ct.key -name secp256r1 -genkey
-RUN openssl ec -in ct.key -pubout -out ct.pem
+RUN openssl ecparam -out ct.key -name secp256r1 -genkey && openssl ec -in ct.key -pubout -out ct.pem
 
 EXPOSE 8080
 
